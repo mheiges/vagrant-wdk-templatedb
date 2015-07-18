@@ -1,0 +1,19 @@
+# These are sensitive and site-specific values that do not belong in 
+# source code repositories.
+---
+
+private:
+
+  # values for WDK metaConfig.yaml
+  # see http://s.eupathdb.org/17o6e3Z for details.
+  metaConfig:
+    appDb:
+      instance: //server.exampmle.org/tmpl200s
+      password: sdiow3ij1@
+      login: tmpluser
+      userDbLink: ""
+    userDb:
+      instance: //server.exampmle.org/tmpl200s
+      password: sdiow3ij1@
+      login: tmpluser
+

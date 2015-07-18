@@ -1,0 +1,39 @@
+# General configuration settings. This is versioned in SCM so 
+# no private data here.
+
+# product - e.g. TemplateDB, CryptoDB . Used throughout the system, including as the
+#           tomcat instance name.
+# webapp - http://localhost:9090/<_webapp>
+# base_gus - where project_home, gus_home, website files are installed. Equivalent to,
+#            for example, /var/www/TemplateDB/strategies.integrate on a phyiscal server.
+# tomcat_port - http port that the <common.product> instance is using.
+#               "instance_manager status" can help identify the port.
+---
+
+_product: TemplateDB
+_webapp: strategies
+_base_gus: /home/vagrant/{{ _product }}/{{ _webapp }}
+
+common:
+  product: "{{ _product }}"
+  webapp: "{{ _webapp }}"
+  base_gus: "{{ _base_gus }}"
+  tomcat_instance: "{{ _product }}"
+  tomcat_port: 9380
+
+  build_env:
+    PROJECT_HOME: "{{_base_gus}}/project_home"
+    GUS_HOME: "{{_base_gus}}/gus_home"
+    PATH: "{{_base_gus}}/gus_home/bin:{{_base_gus}}/project_home/install/bin:{{ ansible_env.PATH }}"
+
+
+# By the way,
+# ansible 1.9.1 generates recursive loop if we do this.
+#
+#     common:
+#       product: TemplateDB
+#       webapp: strategies
+#       base_gus: "/home/vagrant/{{ common.product }}/{{ common.webapp }}"
+#
+# Hence the extra product and webapp workaround.
+# See https://github.com/ansible/ansible/issues/8603

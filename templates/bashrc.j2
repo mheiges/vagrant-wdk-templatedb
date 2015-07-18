@@ -1,0 +1,8 @@
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+BASE_GUS={{ common.base_gus }}
+export PROJECT_HOME=${BASE_GUS}/project_home
+export GUS_HOME=${BASE_GUS}/gus_home/
+export PATH=${PROJECT_HOME}/install/bin:${GUS_HOME}/bin:${PATH}

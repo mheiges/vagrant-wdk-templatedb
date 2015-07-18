@@ -1,0 +1,15 @@
+required:
+ project: {{ common.product }}
+ appDb.instance: {{ private.metaConfig.appDb.instance }}
+ appDb.login: {{ private.metaConfig.appDb.login }}
+ appDb.password: {{ private.metaConfig.appDb.password }}
+ appDb.userDbLink:  {{ private.metaConfig.appDb.userDbLink }}
+ userDb.instance: {{ private.metaConfig.userDb.instance }}
+ userDb.login: {{ private.metaConfig.userDb.login }}
+ userDb.password: {{ private.metaConfig.userDb.password }}
+ gushome: {{ common.base_gus }}/gus_home
+ webServiceUrl: http://localhost:{{ common.tomcat_port }}/strategies/services/WsfService
+ myURL: http://sa.apidb.org/strategies/
+
+sections:
+  - {{ common.product|lower }}

@@ -1,0 +1,82 @@
+---
+- hosts: all
+  sudo: no
+  gather_facts: True
+  vars_files:
+    - config/common.yml
+    - config/private.yml
+  environment: common.build_env
+
+  tasks:
+
+    - file: path="{{ item }}"
+            state=directory
+      with_items:
+        - "{{ common.base_gus }}/project_home"
+        - "{{ common.base_gus }}/gus_home"
+        - "{{ common.base_gus }}/etc"
+
+    - file: path="/home/vagrant"
+            state=directory
+            mode=0755
+
+    - template: dest=/home/vagrant/.bashrc
+                src=templates/bashrc.j2 
+
+    - template: dest="{{ common.base_gus }}/etc/webapp.prop"
+                src=templates/webapp.prop.j2
+
+    - template: dest="{{ common.base_gus }}/etc/{{ common.webapp }}.xml"
+                src=templates/context.xml.j2
+
+    - template: dest="{{ common.base_gus }}/etc/metaConfig_ansible"
+                src=templates/metaConfig_ansible.j2
+
+    - lineinfile: dest=/home/vagrant/.bash_history
+                  line="build WDKTemplateSite webinstall -append -installConfigFile -webPropFile {{ common.base_gus }}/etc/webapp.prop"
+
+    - name: enable SOCKS proxy for tomcat jvm
+      lineinfile: dest=/usr/local/tomcat_instances/{{ common.tomcat_instance }}/conf/instance.env
+                  regexp="^CATALINA_OPTS\['SOCKS'\]"
+                  line="CATALINA_OPTS['SOCKS']='-DsocksProxyHost=127.0.0.1 -DsocksProxyPort=1080'"
+      sudo: yes
+      notify: restart tomcat instance
+
+    - subversion: repo={{ item.url }}
+                  dest="{{ common.base_gus }}/project_home/{{ item.local }}"
+      with_items:
+        - { url: 'https://www.cbil.upenn.edu/svn/gus/CBIL/trunk',
+            local: CBIL }
+        - { url: 'https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk',
+            local: EuPathSiteCommon }
+        - { url: 'https://www.cbil.upenn.edu/svn/gus/FgpUtil/trunk',
+            local: FgpUtil }
+        - { url: 'https://www.cbil.upenn.edu/svn/gus/install/trunk',
+            local: install }
+        - { url: 'https://www.cbil.upenn.edu/svn/gus/WDK/trunk',
+            local: WDK }
+        - { url: 'https://www.cbil.upenn.edu/svn/gus/WDKTemplateSite/trunk',
+            local: WDKTemplateSite }
+        - { url: 'https://www.cbil.upenn.edu/svn/gus/WSF/trunk',
+            local: WSF }
+      tags: 
+        - build
+        - svn
+
+    - name: build
+      shell: "build WDKTemplateSite webinstall -append -installConfigFile -webPropFile {{ common.base_gus }}/etc/webapp.prop"
+      async: 1200
+      poll: 10
+      tags: 
+        - build
+
+    - name: site configure
+      shell: "{{ common.base_gus }}/gus_home/bin/templateSiteConfigure -model {{ common.product }} -filename {{ common.base_gus }}/etc/metaConfig_ansible"
+      tags:
+        - configure
+
+
+  handlers:
+    - name: restart tomcat instance
+      shell: instance_manager restart {{ common.tomcat_instance }}
+      sudo: yes
