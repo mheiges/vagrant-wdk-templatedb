@@ -35,13 +35,6 @@
     - lineinfile: dest=/home/vagrant/.bash_history
                   line="build WDKTemplateSite webinstall -append -installConfigFile -webPropFile {{ common.base_gus }}/etc/webapp.prop"
 
-    - name: enable SOCKS proxy for tomcat jvm
-      lineinfile: dest=/usr/local/tomcat_instances/{{ common.tomcat_instance }}/conf/instance.env
-                  regexp="^CATALINA_OPTS\['SOCKS'\]"
-                  line="CATALINA_OPTS['SOCKS']='-DsocksProxyHost=127.0.0.1 -DsocksProxyPort=1080'"
-      sudo: yes
-      notify: restart tomcat instance
-
     - subversion: repo={{ item.url }}
                   dest="{{ common.base_gus }}/project_home/{{ item.local }}"
       with_items:
@@ -69,14 +62,20 @@
       poll: 10
       tags: 
         - build
+      notify: restart webapp
 
     - name: site configure
       shell: "{{ common.base_gus }}/gus_home/bin/templateSiteConfigure -model {{ common.product }} -filename {{ common.base_gus }}/etc/metaConfig_ansible"
       tags:
         - configure
+      notify: restart webapp
 
 
   handlers:
     - name: restart tomcat instance
       shell: instance_manager restart {{ common.tomcat_instance }}
+      sudo: yes
+
+    - name: restart webapp
+      shell: instance_manager manage {{ common.tomcat_instance }} restart {{ common.webapp }}
       sudo: yes

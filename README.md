@@ -21,6 +21,18 @@ sensitive data. The `config/common.yml` file typically does not need to be chang
 For the brave, all the configuration features of Vagrant and VirtualBox are of course
 available as well, but there is no requirement that you tinker with them.
 
+## VPN setup, if needed
+
+The website uses a UGA Postgres database. If off-campus you will need a VPN setup in 
+advance so the WDK can connect. If the WDK can not connect to the database it
+will not start. There are many options for a VPN. 
+[sshuttle](https://github.com/jagheterfredrik/sshuttle) is one of them.
+
+    sshuttle -r <user>@<ugahost> <uga ip subnet>.0/24
+
+`<ugahost>` is a server that has clear access to the Postgres database.
+Tunneling is limited to packets destined to `<uga ip subnet>` .
+
 ## Start the virtual machine
 
 In the project dir run `vagrant up`. Vagrant will download the base box on the first 
@@ -28,6 +40,13 @@ run and cache it for future deployments. The base box represents a server freshl
 provisioned by Puppet. Here, Vagrant leverages Ansible to deploy and configure
 a TemplateDB site, simulating how project staff would interact with the server. This
 provides the opportunity to validate our Puppet deployments.
+
+## Accessing the website
+
+Vagrant forwards the tomcat port to 9380 on your host computer, so the 
+website is reachable from your host at
+
+[http://localhost:9380/strategies/](http://localhost:9380/strategies/)
 
 ## Interacting with the server
 
