@@ -16,7 +16,8 @@ rewrites (primarily via Puppet).
 
 Copy `config/private.yml.sample` to `config/private.yml` and supply desired values. 
 `private.yml` is excluded from git commits to reduce the changes of publishing
-sensitive data. The `config/common.yml` file typically does not need to be changed.
+sensitive data. The other file in the `config` directory, `config/common.yml`,
+typically does not need to be changed.
 
 For the brave, all the configuration features of Vagrant and VirtualBox are of course
 available as well, but there is no requirement that you tinker with them.
@@ -26,7 +27,7 @@ available as well, but there is no requirement that you tinker with them.
 The website uses a UGA Postgres database. If off-campus you will need a VPN setup in 
 advance so the WDK can connect. If the WDK can not connect to the database it
 will not start. There are many options for a VPN. 
-[sshuttle](https://github.com/jagheterfredrik/sshuttle) is one of them.
+[sshuttle](https://github.com/mheiges/sshuttle) is one of them.
 
     sshuttle -r <user>@<ugahost> <uga ip subnet>.0/24
 
