@@ -70,6 +70,8 @@
         - configure
       notify: restart webapp
 
+    - name: deploy webapp
+      shell: "instance_manager manage {{ common.product }} deploy {{ common.base_gus }}/etc/strategies.xml"
 
   handlers:
     - name: restart tomcat instance
