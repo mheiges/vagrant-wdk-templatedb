@@ -7,7 +7,7 @@ rewrites (primarily via Puppet).
 ### Install Dependencies
 
 * Download and install [Vagrant](https://www.vagrantup.com/downloads.html)
-* Download and install  [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 * Download and install [Ansible](http://docs.ansible.com/ansible/intro_installation.html)
 
 ## Clone project
